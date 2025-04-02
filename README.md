@@ -20,3 +20,18 @@
 对于make_mask.py:该代码的作用是把障碍物放入背景网格之后，计算他的mask函数，用于计算SDF时使用。
 
 对于read_mask.py:该代码用于检测生成的mask是否符合对应的算例。
+
+环境、依赖包的安装（确保python已经安装）：使用vs code或者pycharm软件，进行新建项目，在项目下面创建环境文件夹venv，接下来在终端处使用命令cd到venv文件下开始安装下载所需的依赖。
+
+①fluodfoam库，在终端使用pip install fluidfoam进行安装，根据https://fluidfoam.readthedocs.io/en/latest/提供的代码中，我们选取符合我们需求能够读取openfoam算例的网格数据，并且进行插值的代码，即DateY.py。
+②numpy，该库用于将数据处理成numpy数组，安装方案为在终端输入命令pip install numpy。
+③matplotlib，该库在这里用于插值后的数据可视化，使用命令pip install matplotlib安装。
+④scipy，使用命令pip install scipy安装。
+⑤skfmm，同样的为pip install skfmm 该库用于加载掩盖码信息快速生成SDF函数。
+⑥pickle，该库用于读取pkl文件，安装方法为pip install pickle。
+⑦trimesh，用于读取stl文件，安装方法为 pip install trimesh。
+⑧stl，用于生成stl文件，安装方法为pip install stl。
+
+以上所有的库就是该项目所需要安装的，接下来安装完毕，进行代码编写，在新建项目下面新建py文件，用于编写以上所有代码，在运行代码之前，在终端启动环境，直接输入命令.venv\Scripts\activate即可，然后就可以运行代码了。
+
+运行顺序：第一使用代码make_model_stl.py生成三角形模型stl文件，在4_stl.py则是用来生成四边形模型；第二使用已经修改完成尺寸要求的blockmeshdict文件生成背景网格；第三使用openfoam的sanppyhexmesh在背景网格中扣除make_model_stl.py或4_stl.py生成的模型，得到计算域的网格，并及进行计算；第四使用DateY.py读取并处理openfoam的计算结果；第五使用make_mask.py读取计算域的集合，生成掩盖码信息；第六使用DateX_SDF.py读取生成的掩盖码信息文件并进行SDF函数计算，后处理成所需要的numpy类型（n，3，x，y）。
