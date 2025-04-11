@@ -1,0 +1,7 @@
+fluidfoam
+numpy
+matplotlib
+scipy
+scikit-fmm
+trimesh
+numpy-stl

@@ -32,17 +32,19 @@
 
 3. matplotlib，该库在这里用于插值后的数据可视化，使用命令`pip install matplotlib`安装。
 
-4.  scipy，使用命令`pip install scipy`安装。 
+4. scipy，使用命令`pip install scipy`安装。 
 
-5. skfmm，同样的为`pip install skfmm `该库用于加载掩盖码信息快速生成SDF函数。
+5. skfmm，同样的为`pip install scikit-fmm`该库用于加载掩盖码信息快速生成SDF函数。
 
-6. pickle，该库用于读取pkl文件，安装方法为`pip install pickle`。
+6. trimesh，用于读取stl文件，安装方法为 `pip install trimesh`。
 
-7. trimesh，用于读取stl文件，安装方法为 `pip install trimesh`。
+7. stl，用于生成stl文件，安装方法为`pip install numpy-stl`。
 
-8. stl，用于生成stl文件，安装方法为`pip install stl`。
+以上是需要额外安装的python依赖。
 
-以上所有的库就是该项目所需要安装的，接下来安装完毕，进行代码编写，在新建项目下面新建python文件，用于编写以上所有代码，在运行代码之前，在终端启动环境，直接输入命令`.venv\Scripts\activate`即可，然后就可以运行代码了。
+可以依次输入`pip install`安装，或者使用`pip install -r requirements.txt`安装所有。
+
+在终端启动环境，直接输入命令`.venv\Scripts\activate`即可，然后就可以运行代码了。
 
 ## **运行顺序** 
 
