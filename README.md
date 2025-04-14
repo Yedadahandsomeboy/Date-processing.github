@@ -8,17 +8,12 @@
 
 ## **该repository的各个代码的作用** 
 
-**对于DateY.py：** 该代码的作用是，使用fluidfoam库来读取openfoam算例的非结构网格信息，并读取指定时间步文件的 U、P与网格点对应，进行插值成模型输出数据集的shape（n，3，x，y）。
-
-**对于DateX_SDF.py：** 该代码使用skfmm库加载掩盖码信息，能够准确快速的计算出训练数据集的三个SDF函数，这里需要提前计算出计算域和障碍物的mask.pkl。
-
-**对于blockmeshdict.cc：** 这是openfoam生成背景网格的文件，指定不变的计算域（-100，-60）（160，60）单位为mm，只需要用代码生成不同的障碍物（基础障碍物为五个形状：圆、前后三角形、菱形、正方形），再运用snappyhexmesh将障碍物映射到背景网格的指定位置， 抠出障碍物的形状（这一步非常容易出错，snappyhexmesh是一个三维工具，所以在用代码生成障碍物.stl文件时，一定要生成厚度跟blockmeshdict的一样，一般openfoam默认二维的模型厚度为1）。
-
 **对于make_stl.py：** 文件位于`constant/trisurface`目录中，该代码的作用是随机生成三角形或者四边形障碍物的stl文件，后续需要三角形中心在背景网格的原点（0，0），厚度定义为1mm。文件运行后将在当前目录生成一个`wall.stl`文件。
 
-**对于make_mask.py：** 该代码的作用是把障碍物放入背景网格之后，计算流域的几何mask函数，用于计算SDF时使用。
+**openfoam**  包含OpenFOAM的所有配置文件，流体区域均已固定为（-50， -60， 0）至（210， 60， 1），单位米，使用simpleFoam模型计算结果。
 
-**对于read_mask.py：** 该代码用于检测生成的mask可视化，是否符合对应算例流域几何。
+**对于PostProcess.py：** 使用fluidfoam库来读取openfoam算例的非结构网格信息，并读取指定时间步文件的 U、P与网格点对应，进行插值成模型输出数据集的shape（1，3，x，y）。使用trimesh计算整个区域的mask数据。使用skfmm计算整个区域的SDF数据。
+
 
 ## **环境、依赖包的安装（确保python已经安装）** 
 
@@ -46,16 +41,23 @@
 
 ## **运行顺序** 
 
-1. 第一使用代码make_model_stl.py生成三角形模型stl文件，在4_stl.py则是用来生成四边形模型放入openfoam算例文件的constant\triSurface里面；
+```shell
+# activate environment
+source ./venv/bin/activate
 
-2. 第二使用已经修改完成尺寸要求的blockmeshdict文件生成背景网格；
+# generate stl file
+cd ./constant/trisurface
+python make_stl.py
 
-3. 第三使用openfoam的sanppyhexmesh在背景网格中扣除make_model_stl.py或4_stl.py生成的模型，得到计算域的网格，并及进行计算；
+# run openfoam
+cd ../../
+foamCleanTutorial
+blockMesh
+surfaceFeatureExtract
+snappyHexMesh -overwrite
+cp 0.orig/* 0/
+simpleFoam
 
-4. 第四使用DateY.py读取并处理openfoam的计算结果；
-
-5. 第五使用make_mask.py读取计算域的集合，生成掩盖码信息；
-
-6. 第六使用DateX_SDF.py读取生成的掩盖码信息文件并进行SDF函数计算，后处理成所需要的numpy类型（n，3，x，y）。
-
-OpenFoam-v2012算例的全部文件已经更新在目录中，其中的snppyhexmeshdict需要修改的地方已在文件中做出标记。
+# save data for machine learning
+python PostProcess.py
+```
