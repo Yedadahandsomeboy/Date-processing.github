@@ -76,17 +76,34 @@ for i in range(len(xi)):
 # plt.show()
 
 ############################# SDF ###############################
-# 计算 SDF, with -1 inside, 1 outside
+# 计算 SDF, with "obstacle":0, "flow":1, "non-slip":2, "inlet":3, "outlet":4
 sdf = mask.copy()
-sdf[sdf == 1] = -1
-sdf[sdf == 0] = 1
+#sdf[sdf == 1] = -1
+#sdf[sdf == 0] = 1
+sdf_obstacle = skfmm.distance(sdf, dx=1.0) #障碍物sdf
+boundary_mask = mask.copy() 
+#设置边界条件
+boundary_condition = {"obstacle":0, "flow":1, "non-slip":2, "inlet":3, "outlet":4}
+boundary_mask[sdf == -1] = boundary_condition["obstacle"]
+boundary_mask[sdf == 1] = boundary_condition["flow"]
+boundary_mask[0, :] = boundary_condition["non-slip"]   # 上边界
+boundary_mask[-1, :] = boundary_condition["non-slip"]  # 下边界
+boundary_mask[:, 0] = boundary_condition["inlet"]      # 左边界
+boundary_mask[:, -1] = boundary_condition["outlet"]    # 右边界
+#sdf = skfmm.distance(sdf)
+sdf_boundary = skfmm.distance(boundary_mask, dx=1.0)  # 边界SDF
 
-sdf = skfmm.distance(sdf)
+domain_mask = np.ones_like(sdf)
+domain_mask[0, :] = -1   # 上边界设为域内
+domain_mask[-1, :] = -1  # 下边界设为域内
+domain_mask[:, 0] = -1   # 左边界设为域内
+domain_mask[:, -1] = -1  # 右边界设为域内
 
+sdf_domain = skfmm.distance(domain_mask, dx=1.0)  # 计算域SDF
 ###########################################################
 # # # 保存数据到 hdf5 文件
-mask_sdf = np.stack([mask, sdf], axis=0)
-mask_sdf = mask_sdf[np.newaxis, ...]   # shape (1, 2, 520, 240)
+mask_sdf = np.stack([sdf_obstacle, sdf_boundary,sdf_domain ], axis=0)
+mask_sdf = mask_sdf[np.newaxis, ...]   # shape (1, 3, 520, 240)
 
 with h5py.File("mask_sdf.h5", "w") as f:
     f.create_dataset("mask_sdf", data=mask_sdf)
