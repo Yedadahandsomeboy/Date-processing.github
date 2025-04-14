@@ -175,3 +175,10 @@ cython_debug/
 
 # vs code
 .vscode/
+
+# result file
+.h5
+.pkl
+**/*.stl
+**/*.eMesh
+**/wall*

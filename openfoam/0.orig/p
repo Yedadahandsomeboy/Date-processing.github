@@ -9,53 +9,45 @@ FoamFile
 {
     version     2.0;
     format      ascii;
-    class       volVectorField;
-    location    "0";
-    object      U;
+    class       volScalarField;
+    object      p;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-#include        "include/initialConditions"
+dimensions      [0 2 -2 0 0 0 0];
 
-dimensions      [0 1 -1 0 0 0 0];
-
-internalField   uniform $flowVelocity;
+internalField   uniform 0;
 
 boundaryField
 {
-    #includeEtc "caseDicts/setConstraintTypes"
-
-    #include "include/fixedInlet"
 
     inlet
     {
-        type            fixedValue;
-        value           uniform (50 0 0);  // 设定一个速度入口
+        type            zeroGradient;
     }
 
     outlet
     {
-        type            zeroGradient;  // 允许流体自由流出
+        type            fixedValue;
+        value           $internalField;
     }
 
     topBottom
     {
-        type            noSlip;
+        type            zeroGradient;
     }
 
     wall
     {
-        type            noSlip;  // 三角形壁面无滑移
+        type            zeroGradient;
     }
-
+    
     frontAndBack
     {
-        type            empty;  // 确保二维计算
+        type            empty;
     }
 
-    #include "include/frontBackUpperPatches"
 }
-
 
 // ************************************************************************* //
 

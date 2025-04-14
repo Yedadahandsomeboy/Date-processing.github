@@ -4,4 +4,6 @@ matplotlib
 scipy
 scikit-fmm
 trimesh
+rtree
 numpy-stl
+h5py
