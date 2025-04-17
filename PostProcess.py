@@ -76,7 +76,7 @@ for i in range(len(xi)):
 # plt.show()
 
 ############################# SDF ###############################
-# 计算 SDF
+# 计算 障碍物SDF、边界条件、计算域SDF
 sdf = mask.copy()
 sdf[sdf == 1] = -1
 sdf[sdf == 0] = 1
