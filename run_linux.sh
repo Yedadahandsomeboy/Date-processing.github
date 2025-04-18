@@ -9,7 +9,7 @@ python make_stl.py
 
 # run openfoam
 cd ../../
-foamCleanTutorial
+foamCleanTutorials
 blockMesh
 surfaceFeatureExtract
 snappyHexMesh -overwrite
