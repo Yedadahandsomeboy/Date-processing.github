@@ -12,9 +12,15 @@ cd ../../
 foamCleanTutorials
 blockMesh
 surfaceFeatureExtract
-snappyHexMesh -overwrite
+decomposePar -fileHandler collated
+mpirun -np 12 snappyHexMesh -parallel -overwrite -fileHandler collated
+reconstructParMesh -constant
 cp 0.orig/* 0/
-simpleFoam
+decomposePar -latestTime -force
+mpirun -np 12 simpleFoam -parallel -fileHandler collated
+reconstructPar
+rm -rf processor*
 
 # save data for machine learning
 python PostProcess.py
+
