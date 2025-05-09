@@ -47,6 +47,15 @@ def create_stl(triangle_vertices, thickness=1):
 
 def main_triangle():
     triangle = generate_random_triangle()
+    max_y = max(triangle[:, 1])
+    min_y = min(triangle[:, 1])
+    L = max_y - min_y
+    while L > 6:
+        triangle = generate_random_triangle()
+        max_y = max(triangle[:, 1])
+        min_y = min(triangle[:, 1])
+        L = max_y - min_y
+
     create_stl(triangle)
 
 def generate_random_quadrilateral():
@@ -98,6 +107,16 @@ def create_quadrilateral_stl(quadrilateral_vertices, thickness=1): # 厚度单�
 
 def main_quadrilateral():
     quadrilateral = generate_random_quadrilateral()
+    print(quadrilateral)
+    max_y = max(quadrilateral[:, 1])
+    min_y = min(quadrilateral[:, 1])
+    L = max_y - min_y
+    while L > 6:
+        quadrilateral = generate_random_quadrilateral()
+        max_y = max(quadrilateral[:, 1])
+        min_y = min(quadrilateral[:, 1])
+        L = max_y - min_y
+
     create_quadrilateral_stl(quadrilateral)
 
 if __name__ == "__main__":
