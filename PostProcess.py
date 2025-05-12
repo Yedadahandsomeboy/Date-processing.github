@@ -43,7 +43,7 @@ print("pressure_i 插值成功, 其前5个值:", pressure_i.flatten()[:5])
 print("velx_i 插值成功, 其前5个值:", velx_i.flatten()[:5])
 print("vely_i 插值成功, 其前5个值:", vely_i.flatten()[:5])
 
-result = np.stack([pressure_i.T, velx_i.T, vely_i.T], axis=0)
+result = np.stack([velx_i.T, vely_i.T, pressure_i.T], axis=0)
 result = result[np.newaxis, ...]   # shape (1, 3, 520, 240)
 
 # save result as hdf5
